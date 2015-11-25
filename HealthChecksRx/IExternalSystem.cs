@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace HealthChecksRx
 {
-  class Program
+  interface IExternalSystem
   {
-    static void Main(string[] args)
-    {
-      // Solution.Run();
-      Template.Run();
-    }
+    string Name { get; }
+
+    IObservable<HealthCheck> ObserveHealth();
   }
 }
