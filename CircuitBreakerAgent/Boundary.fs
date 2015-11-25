@@ -47,12 +47,12 @@ let handleErrorInOpen state limit =
 
 let handleClosed f msg time retryAfter = async {
     if DateTime.Now - time < TimeSpan.FromSeconds retryAfter
-    then return Error
+    then return Error, time
     else 
         let! response = handleOpen f msg
         match response with
-        | Response r -> return Response r
-        | Error -> return Error }
+        | Response r -> return Response r, time
+        | Error -> return Error, DateTime.Now }
 
 let initialState = { CircuitState = Open; ErrorCount = 0 }
 
@@ -71,10 +71,10 @@ let createCircuitBreaker f limit retryAfter =
             | Response r -> return state, Response r
             | Error -> return handleErrorInOpen state limit, Error
         | Closed time -> 
-            let! result = handleClosed f msg time retryAfter
+            let! result, time = handleClosed f msg time retryAfter
             match result with
             | Response r -> return initialState, Response r
-            | Error -> return state, Error }
+            | Error -> return { state with CircuitState = Closed time }, Error }
 
     let agent = replyAgentOf2Async loop initialState
 
