@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntroRx
 {
-  class Program
+  public class Program
   {
-    static void Main(string[] args)
+    private static event EventHandler Event;
+
+    public static void Main(string[] args)
     {
+      // Solution.Run();
+      Template.Run();
     }
   }
 }
