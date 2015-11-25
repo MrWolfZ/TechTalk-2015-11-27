@@ -4,16 +4,6 @@ type Agent<'T> = MailboxProcessor<'T>
 
 type Message<'TRequest, 'TResponse> = Message of 'TRequest * AsyncReplyChannel<'TResponse>
 
-let agentOfAsync f = Agent.Start <| fun inbox ->
-    let rec loop () = async {
-        let! msg = inbox.Receive()
-        do! f msg
-        return! loop()
-    }
-    loop()
-
-let agentOf f = agentOfAsync (fun msg -> async { f msg })
-
 let agentOf2Async f initial = Agent.Start <| fun inbox ->
     let rec loop state = async {
         let! msg = inbox.Receive()
@@ -23,6 +13,10 @@ let agentOf2Async f initial = Agent.Start <| fun inbox ->
     loop initial
 
 let agentOf2 f initial = agentOf2Async (fun msg state -> async { return f msg state }) initial
+
+let agentOfAsync f = agentOf2Async (fun msg _ -> f msg) ()
+
+let agentOf f = agentOfAsync (fun msg -> async { f msg })
 
 let replyAgentOf2Async f initial = Agent.Start <| fun inbox ->
     let rec loop state = async {
