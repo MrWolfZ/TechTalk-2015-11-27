@@ -7,7 +7,7 @@ open System.Threading
 let main argv = 
     let count = ref 0
     let unreliable x = async {
-        if !count >= 5 
+        if !count >= 4 
         then 
             count.Value <- 0
             return failwith "error"
@@ -15,7 +15,7 @@ let main argv =
             count.Value <- !count + 1
             return x }
 
-    let cb = createCircuitBreaker unreliable 2 5.0
+    let cb = createCircuitBreaker unreliable 2 2.0
 
     let rec loop count = async {
         if count < 100 then
@@ -31,7 +31,7 @@ let main argv =
             return! loop <| count + 1 }
     
     let cts = new CancellationTokenSource()
-    Async.Start (loop 0, cancellationToken = cts.Token)
+    Async.Start (loop 1, cancellationToken = cts.Token)
     Console.ReadKey() |> ignore
     printfn "Cancelling..."
     cts.Cancel()
