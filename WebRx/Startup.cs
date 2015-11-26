@@ -11,13 +11,13 @@ namespace WebRx
 {
   public class Startup
   {
-    public Startup(IHostingEnvironment env)
+    public Startup()
     {
       // Set up configuration sources.
       var builder = new ConfigurationBuilder()
           .AddJsonFile("appsettings.json")
           .AddEnvironmentVariables();
-      Configuration = builder.Build();
+      this.Configuration = builder.Build();
     }
 
     public IConfigurationRoot Configuration { get; set; }
@@ -39,7 +39,7 @@ namespace WebRx
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider provider)
     {
-      loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+      loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
       loggerFactory.AddDebug();
 
       app.UseIISPlatformHandler();

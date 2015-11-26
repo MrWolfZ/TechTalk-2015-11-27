@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -33,8 +32,8 @@ namespace IntroRx
       subject.OnNext(2);
 
       // transforming into observables
-      var fromAsync = Observable.FromAsync(() => Task.Factory.StartNew(() => 2));
-      var fromEvent = Observable.FromEventPattern(h => Event += h, h => Event -= h);
+      Observable.FromAsync(() => Task.Factory.StartNew(() => 2));
+      Observable.FromEventPattern(h => Event += h, h => Event -= h);
 
       // subscribing to observables
       var subscription = created.Subscribe(Console.WriteLine);

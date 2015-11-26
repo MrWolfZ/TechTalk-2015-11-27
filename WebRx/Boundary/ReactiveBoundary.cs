@@ -10,7 +10,7 @@ namespace WebRx.Boundary
     private readonly Subject<object> requests = new Subject<object>();
     private readonly Subject<object> responses = new Subject<object>();
 
-    public IObservable<object> Requests { get { return this.requests; } }
+    public IObservable<object> Requests => this.requests;
 
     public async Task<TResponse> ProcessRequest<TRequest, TResponse>(TRequest request, Func<TResponse, bool> predicate = null)
     {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using WebRx.Boundary;
@@ -22,7 +21,7 @@ namespace WebRx.Controllers
     public async Task<IActionResult> Get()
     {
       var response = await this.Boundary.ProcessRequest<GetAllRequest, GetAllResponse>(new GetAllRequest());
-      return Json(response.Persons.Select(model => new DTOs.Person.Person { ID = model.ID, FirstName = model.FirstName, LastName = model.LastName }));
+      return this.Json(response.Persons.Select(model => new DTOs.Person.Person { ID = model.ID, FirstName = model.FirstName, LastName = model.LastName }));
     }
     
     [HttpGet("{id}")]
@@ -36,7 +35,7 @@ namespace WebRx.Controllers
         return new HttpNotFoundObjectResult(notFound.Message);
       }
 
-      return Json(new DTOs.Person.Person { ID = response.Person.ID, FirstName = response.Person.FirstName, LastName = response.Person.LastName });
+      return this.Json(new DTOs.Person.Person { ID = response.Person.ID, FirstName = response.Person.FirstName, LastName = response.Person.LastName });
     }
     
     [HttpPost]

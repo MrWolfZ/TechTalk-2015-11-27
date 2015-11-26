@@ -11,7 +11,7 @@ namespace WebRx.Interactors
     private readonly IReactiveBoundary boundary;
     private readonly CompositeDisposable disposables = new CompositeDisposable();
 
-    public AbstractInteractor(IReactiveBoundary boundary)
+    protected AbstractInteractor(IReactiveBoundary boundary)
     {
       this.boundary = boundary;
       this.disposables.Add(this.boundary.Requests.OfType<TRequest>().Subscribe(this.ProcessRequest));

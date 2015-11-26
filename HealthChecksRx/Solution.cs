@@ -8,7 +8,7 @@ namespace HealthChecksRx
 {
   class Solution
   {
-    private static Random r = new Random();
+    private static readonly Random R = new Random();
 
     public static void Run()
     {
@@ -41,6 +41,6 @@ namespace HealthChecksRx
       Console.WriteLine($"System \"{check.ExternalSystemName}\" reported health status: {check.IsAvailable}");
     }
 
-    private static IExternalSystem CreateExternalSystem(string name) => new ExternalSystemSolution(name, r);
+    private static IExternalSystem CreateExternalSystem(string name) => new ExternalSystemSolution(name, R);
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -9,7 +8,7 @@ namespace HealthChecksRx
 {
   class Template
   {
-    private static Random r = new Random();
+    private static readonly Random R = new Random();
 
     public static void Run()
     {
@@ -26,10 +25,8 @@ namespace HealthChecksRx
 
       // combine
       var combined = Observable.Empty<IEnumerable<HealthCheck>>();
-      var scan = Observable.Empty<ImmutableDictionary<string, bool>>();
 
       disposable.Add(combined.Subscribe(e => Console.WriteLine("Combined: " + string.Join(", ", e.Select(c => $"{c.ExternalSystemName}={c.IsAvailable}")))));
-      disposable.Add(scan.Subscribe(d => Console.WriteLine("Scanned: " + string.Join(", ", d.Select(p => $"{p.Key}={p.Value}")))));
 
       Console.ReadKey();
       disposable.Dispose();
@@ -40,6 +37,6 @@ namespace HealthChecksRx
       Console.WriteLine($"System \"{check.ExternalSystemName}\" reported health status: {check.IsAvailable}");
     }
 
-    private static IExternalSystem CreateExternalSystem(string name) => new ExternalSystem(name, r);
+    private static IExternalSystem CreateExternalSystem(string name) => new ExternalSystem(name, R);
   }
 }

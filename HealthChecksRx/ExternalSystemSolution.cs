@@ -21,9 +21,9 @@ namespace HealthChecksRx
       return Observable.Generate(
         true,
         _ => true,
-        _ => r.Next(9) > 0 ? true : false,
+        _ => this.r.Next(9) > 0,
         b => new HealthCheck(this.Name, b),
-        _ => TimeSpan.FromSeconds(r.NextDouble() * 2 + 1)
+        _ => TimeSpan.FromSeconds(this.r.NextDouble() * 2 + 1)
       ).Publish().RefCount().StartWith(new HealthCheck(this.Name, true));
     }
   }
