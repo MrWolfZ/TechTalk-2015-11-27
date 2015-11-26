@@ -71,6 +71,7 @@
     <Compile Include="Subscription.cs" />
     <Compile Include="Vote.cs" />
     <Compile Include="VotingEngine.cs" />
+    <Compile Include="VotingEngineSolution.cs" />
     <Compile Include="VotingResult.cs" />
   </ItemGroup>
   <ItemGroup>

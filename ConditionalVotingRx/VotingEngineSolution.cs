@@ -6,13 +6,13 @@ using System.Reactive.Linq;
 
 namespace ConditionalVotingRx
 {
-  public class VotingEngine
+  public class VotingEngineSolution
   {
     private readonly IObservable<Subscription> subscriptionSeq;
     private readonly IObservable<Event> eventSeq;
     private readonly IObservable<Vote> voteSeq;
 
-    public VotingEngine(IObservable<Subscription> subscriptionSeq, IObservable<Event> eventSeq, IObservable<Vote> voteSeq)
+    public VotingEngineSolution(IObservable<Subscription> subscriptionSeq, IObservable<Event> eventSeq, IObservable<Vote> voteSeq)
     {
       this.subscriptionSeq = subscriptionSeq;
       this.eventSeq = eventSeq;
@@ -34,7 +34,18 @@ namespace ConditionalVotingRx
 
     private IObservable<VotingResult> CreateVoteCollector(string id, int nrOfVotes)
     {
-      return Observable.Empty<VotingResult>();
+      var expected = this.voteSeq
+                         .Where(v => v.ID == id)
+                         .Select(v => v.Result)
+                         .Take(nrOfVotes)
+                         .Scan(ImmutableList<bool>.Empty, (list, b) => list.Add(b));
+
+      var timeout = Observable.Timer(TimeSpan.FromSeconds(2))
+                              .CombineLatest(expected.StartWith(ImmutableList<bool>.Empty), (_, l) => l);
+
+      return expected.LastAsync()
+                     .Amb(timeout)
+                     .Select(l => new VotingResult(id, l, nrOfVotes));
     }
   }
 }
