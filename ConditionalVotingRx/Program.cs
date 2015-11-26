@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace ConditionalVotingRx
 {
@@ -24,7 +25,12 @@ namespace ConditionalVotingRx
       subscriptionSeq.OnNext(new Subscription(e => e.Type == MessageType.A));
       eventSeq.OnNext(new Event("2", MessageType.A));
       voteSeq.OnNext(new Vote("2", true));
-      voteSeq.OnNext(new Vote("2", true));
+      Action a = async () =>
+      {
+        await Task.Delay(1000);
+        voteSeq.OnNext(new Vote("2", true));
+      };
+      a();
 
       Console.ReadKey();
 
