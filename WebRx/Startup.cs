@@ -34,7 +34,7 @@ namespace WebRx
 
       // interactors
       services.AddSingleton<IInteractor, Interactors.Person.GetAll>();
-      services.AddSingleton<IInteractor, Interactors.Person.GetById>();
+      // services.AddSingleton<IInteractor, Interactors.Person.GetById>();
       services.AddSingleton<IInteractor, Interactors.Person.GetByIdReactive>();
     }
 

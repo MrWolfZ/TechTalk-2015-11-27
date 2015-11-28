@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using WebRx.Models;
 
 namespace WebRx.Boundary
 {
@@ -36,8 +37,9 @@ namespace WebRx.Boundary
     {
       predicate = predicate ?? (_ => true);
       var responseReactive = this.streams
-                                 .SelectMany(list => list.OfType<IObservable<TResponse>>())
-                                 .SelectMany(s => s)
+                                 .SelectMany(list => list.OfType<IObservable<Choice<TResponse, IImmutableList<Error>>>>())
+                                 .SelectMany(seq => seq)
+                                 .SelectMany(c => c.Get(Observable.Return, errors => Observable.Throw<TResponse>(new BusinessException(errors))))
                                  .Where(predicate)
                                  .FirstAsync();
 
@@ -57,6 +59,6 @@ namespace WebRx.Boundary
     }
 
     public void PublishResponse<TResponse>(TResponse response) => this.responses.OnNext(response);
-    public void PublishResponseStream<TResponse>(IObservable<TResponse> rs) where TResponse : class => this.responseStreams.OnNext(rs);
+    public void PublishResponseStream<TResponse>(IObservable<Choice<TResponse, IImmutableList<Error>>> rs) where TResponse : class => this.responseStreams.OnNext(rs);
   }
 }

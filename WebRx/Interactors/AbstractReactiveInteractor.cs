@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reactive.Linq;
 using WebRx.Boundary;
 using WebRx.Models;
@@ -25,15 +26,18 @@ namespace WebRx.Interactors
       this.boundary.PublishResponseStream(transformed);
     }
 
-    public abstract IObservable<TResponse> TransformRequests(IObservable<TRequest> requests);
+    public abstract IObservable<Choice<TResponse, IImmutableList<Error>>> TransformRequests(IObservable<TRequest> requests);
 
-    protected IObservable<Choice<TResponse, IEnumerable<Error>>> Error(Exception ex) =>
-      Observable.Return(new Choice<TResponse, IEnumerable<Error>>(new[] { new Error(ErrorKind.Unknown, ex.Message) }));
+    protected IObservable<Choice<TResponse, IImmutableList<Error>>> Success(TResponse response) =>
+      Observable.Return(new Choice<TResponse, IImmutableList<Error>>(response));
 
-    protected IObservable<Choice<TResponse, IEnumerable<Error>>> Error(Error e) => 
-      Observable.Return(new Choice<TResponse, IEnumerable<Error>>(new[] { e }));
+    protected IObservable<Choice<TResponse, IImmutableList<Error>>> Error(Exception ex) =>
+      Observable.Return(new Choice<TResponse, IImmutableList<Error>>(ImmutableList.Create(new Error(ErrorKind.Unknown, ex.Message))));
 
-    protected IObservable<Choice<TResponse, IEnumerable<Error>>> Error(IEnumerable<Error> e) =>
-      Observable.Return(new Choice<TResponse, IEnumerable<Error>>(e));
+    protected IObservable<Choice<TResponse, IImmutableList<Error>>> Error(Error e) => 
+      Observable.Return(new Choice<TResponse, IImmutableList<Error>>(ImmutableList.Create(e)));
+
+    protected IObservable<Choice<TResponse, IImmutableList<Error>>> Error(IEnumerable<Error> e) =>
+      Observable.Return(new Choice<TResponse, IImmutableList<Error>>(e.ToImmutableList()));
   }
 }

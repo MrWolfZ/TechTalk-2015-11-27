@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Linq;
+using Microsoft.AspNet.Mvc;
 using WebRx.Boundary;
-using WebRx.Models.Person;
 using WebRx.Models;
+using WebRx.Models.Person;
+using Person = WebRx.DTOs.Person.Person;
 
 namespace WebRx.Controllers
 {
@@ -16,36 +17,49 @@ namespace WebRx.Controllers
     }
 
     private IReactiveBoundary Boundary { get; }
-    
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
       var response = await this.Boundary.ProcessRequest<GetAllRequest, GetAllResponse>(new GetAllRequest());
-      return this.Json(response.Persons.Select(model => new DTOs.Person.Person { ID = model.ID, FirstName = model.FirstName, LastName = model.LastName }));
+      return this.Json(response.Persons.Select(model => new Person { ID = model.ID, FirstName = model.FirstName, LastName = model.LastName }));
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
-      var response = await this.Boundary.ProcessRequest<GetByIdRequest, GetByIdResponse>(new GetByIdRequest(id));
-
-      var notFound = response.Errors.FirstOrDefault(e => e.Kind == ErrorKind.NotFound);
-      if (notFound != null)
+      try
       {
-        return new HttpNotFoundObjectResult(notFound.Message);
-      }
+        var response = await this.Boundary.ProcessRequest<GetByIdRequest, GetByIdResponse>(new GetByIdRequest(id));
 
-      return this.Json(new DTOs.Person.Person { ID = response.Person.ID, FirstName = response.Person.FirstName, LastName = response.Person.LastName });
+        var notFound = response.Errors.FirstOrDefault(e => e.Kind == ErrorKind.NotFound);
+        if (notFound != null)
+        {
+          return this.HttpNotFound(notFound.Message);
+        }
+
+        return this.Json(new Person { ID = response.Person.ID, FirstName = response.Person.FirstName, LastName = response.Person.LastName });
+      }
+      catch (BusinessException ex)
+      {
+        var notFound = ex.Errors.FirstOrDefault(e => e.Kind == ErrorKind.NotFound);
+        if (notFound != null)
+        {
+          return this.HttpNotFound(notFound.Message);
+        }
+
+        return new HttpStatusCodeResult(500);
+      }
     }
-    
+
     [HttpPost]
-    public void Post([FromBody]string value)
+    public void Post([FromBody] string value)
     {
       // TODO
     }
-    
+
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody]string value)
+    public void Put(int id, [FromBody] string value)
     {
       // TODO
     }
