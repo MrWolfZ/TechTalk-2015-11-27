@@ -6,7 +6,7 @@ using WebRx.Boundary;
 
 namespace WebRx.Interactors
 {
-  public abstract class AbstractInteractor<TRequest, TResponse> : IDisposable
+  public abstract class AbstractInteractor<TRequest, TResponse> : IInteractor, IDisposable
   {
     private readonly IReactiveBoundary boundary;
     private readonly CompositeDisposable disposables = new CompositeDisposable();
@@ -14,12 +14,16 @@ namespace WebRx.Interactors
     protected AbstractInteractor(IReactiveBoundary boundary)
     {
       this.boundary = boundary;
-      this.disposables.Add(this.boundary.Requests.OfType<TRequest>().Subscribe(this.ProcessRequest));
     }
 
     public void Dispose()
     {
       this.disposables.Dispose();
+    }
+
+    public void Activate()
+    {
+      this.disposables.Add(this.boundary.Requests.OfType<TRequest>().Subscribe(this.ProcessRequest));
     }
 
     public abstract Task<TResponse> ProcessRequestAsync(TRequest request);

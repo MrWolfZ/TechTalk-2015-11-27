@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebRx.Boundary;
 using WebRx.Data.Person;
@@ -26,6 +27,10 @@ namespace WebRx.Interactors.Person
       catch (KeyNotFoundException)
       {
         return new GetByIdResponse(new[] { new Error(ErrorKind.NotFound, $"The person with ID \"{request.ID}\" does not exist!") });
+      }
+      catch (Exception ex)
+      {
+        return new GetByIdResponse(new[] { new Error(ErrorKind.Unknown, $"Error while fetching the person with ID \"{request.ID}\": {ex}") });
       }
     }
   }

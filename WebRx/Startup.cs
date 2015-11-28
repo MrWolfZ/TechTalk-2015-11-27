@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using WebRx.Boundary;
 using WebRx.Data.Person;
+using WebRx.Interactors;
 
 namespace WebRx
 {
@@ -32,8 +33,9 @@ namespace WebRx
       services.AddSingleton<IPersonRepository, PersonRepository>();
 
       // interactors
-      services.AddSingleton<Interactors.Person.GetAll>();
-      services.AddSingleton<Interactors.Person.GetById>();
+      services.AddSingleton<IInteractor, Interactors.Person.GetAll>();
+      services.AddSingleton<IInteractor, Interactors.Person.GetById>();
+      services.AddSingleton<IInteractor, Interactors.Person.GetByIdReactive>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,9 +50,11 @@ namespace WebRx
 
       app.UseMvc();
 
-      // instantiate interactors
-      provider.GetService(typeof(Interactors.Person.GetAll));
-      provider.GetService(typeof(Interactors.Person.GetById));
+      // activate interactors
+      foreach(var interactor in provider.GetServices<IInteractor>())
+      {
+        interactor.Activate();
+      }
     }
 
     // Entry point for the application.
