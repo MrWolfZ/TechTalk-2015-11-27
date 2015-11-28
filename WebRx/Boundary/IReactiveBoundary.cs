@@ -11,7 +11,7 @@ namespace WebRx.Boundary
 
     Task<TResponse> ProcessRequest<TRequest, TResponse>(TRequest request, Func<TResponse, bool> predicate = null);
 
-    void PublishResponse<TResponse>(TResponse response);
+    void PublishResponse<TResponse>(Choice<TResponse, IImmutableList<Error>> response);
     void PublishResponseStream<TResponse>(IObservable<Choice<TResponse, IImmutableList<Error>>> rs) where TResponse : class;
   }
 }

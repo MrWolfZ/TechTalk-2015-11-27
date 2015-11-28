@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using WebRx.Boundary;
 using WebRx.Data.Person;
@@ -17,20 +18,20 @@ namespace WebRx.Interactors.Person
       this.personRepository = personRepository;
     }
 
-    public override async Task<GetByIdResponse> ProcessRequestAsync(GetByIdRequest request)
+    public override async Task<Choice<GetByIdResponse, IImmutableList<Error>>> ProcessRequestAsync(GetByIdRequest request)
     {
       try
       {
         var person = await this.personRepository.Get(request.ID);
-        return new GetByIdResponse(person);
+        return this.Success(new GetByIdResponse(person));
       }
       catch (KeyNotFoundException)
       {
-        return new GetByIdResponse(new[] { new Error(ErrorKind.NotFound, $"The person with ID \"{request.ID}\" does not exist!") });
+        return this.Error(new Error(ErrorKind.NotFound, $"The person with ID \"{request.ID}\" does not exist!"));
       }
       catch (Exception ex)
       {
-        return new GetByIdResponse(new[] { new Error(ErrorKind.Unknown, $"Error while fetching the person with ID \"{request.ID}\": {ex}") });
+        return this.Error(ex);
       }
     }
   }

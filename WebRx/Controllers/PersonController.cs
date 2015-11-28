@@ -31,13 +31,6 @@ namespace WebRx.Controllers
       try
       {
         var response = await this.Boundary.ProcessRequest<GetByIdRequest, GetByIdResponse>(new GetByIdRequest(id));
-
-        var notFound = response.Errors.FirstOrDefault(e => e.Kind == ErrorKind.NotFound);
-        if (notFound != null)
-        {
-          return this.HttpNotFound(notFound.Message);
-        }
-
         return this.Json(new Person { ID = response.Person.ID, FirstName = response.Person.FirstName, LastName = response.Person.LastName });
       }
       catch (BusinessException ex)

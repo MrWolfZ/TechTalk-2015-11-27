@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WebRx.Boundary;
+using WebRx.Models;
 
 namespace WebRx.Interactors
 {
@@ -26,7 +29,19 @@ namespace WebRx.Interactors
       this.disposables.Add(this.boundary.Requests.OfType<TRequest>().Subscribe(this.ProcessRequest));
     }
 
-    public abstract Task<TResponse> ProcessRequestAsync(TRequest request);
+    public abstract Task<Choice<TResponse, IImmutableList<Error>>> ProcessRequestAsync(TRequest request);
+
+    protected Choice<TResponse, IImmutableList<Error>> Success(TResponse response) =>
+      new Choice<TResponse, IImmutableList<Error>>(response);
+
+    protected Choice<TResponse, IImmutableList<Error>> Error(Exception ex) =>
+      new Choice<TResponse, IImmutableList<Error>>(ImmutableList.Create(new Error(ErrorKind.Unknown, ex.Message)));
+
+    protected Choice<TResponse, IImmutableList<Error>> Error(Error e) =>
+      new Choice<TResponse, IImmutableList<Error>>(ImmutableList.Create(e));
+
+    protected Choice<TResponse, IImmutableList<Error>> Error(IEnumerable<Error> e) =>
+      new Choice<TResponse, IImmutableList<Error>>(e.ToImmutableList());
 
     private async void ProcessRequest(TRequest request)
     {

@@ -44,7 +44,8 @@ namespace WebRx.Boundary
                                  .FirstAsync();
 
       var responseAsync = this.responses
-                              .OfType<TResponse>()
+                              .OfType<Choice<TResponse, IImmutableList<Error>>>()
+                              .SelectMany(c => c.Get(Observable.Return, errors => Observable.Throw<TResponse>(new BusinessException(errors))))
                               .Where(predicate)
                               .FirstAsync();
 
@@ -58,7 +59,7 @@ namespace WebRx.Boundary
       }
     }
 
-    public void PublishResponse<TResponse>(TResponse response) => this.responses.OnNext(response);
+    public void PublishResponse<TResponse>(Choice<TResponse, IImmutableList<Error>> response) => this.responses.OnNext(response);
     public void PublishResponseStream<TResponse>(IObservable<Choice<TResponse, IImmutableList<Error>>> rs) where TResponse : class => this.responseStreams.OnNext(rs);
   }
 }
