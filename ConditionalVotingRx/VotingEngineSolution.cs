@@ -38,7 +38,9 @@ namespace ConditionalVotingRx
                          .Where(v => v.ID == id)
                          .Select(v => v.Result)
                          .Take(nrOfVotes)
-                         .Scan(ImmutableList<bool>.Empty, (list, b) => list.Add(b));
+                         .Scan(ImmutableList<bool>.Empty, (list, b) => list.Add(b))
+                         .Publish()
+                         .RefCount();
 
       var timeout = Observable.Timer(TimeSpan.FromSeconds(2))
                               .CombineLatest(expected.StartWith(ImmutableList<bool>.Empty), (_, l) => l);

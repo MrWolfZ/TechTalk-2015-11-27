@@ -34,7 +34,7 @@ namespace ConditionalVotingRx
 
     private IObservable<VotingResult> CreateVoteCollector(string id, int nrOfVotes)
     {
-      return Observable.Empty<VotingResult>();
+      return Observable.Return(new VotingResult(id, Enumerable.Empty<bool>(), nrOfVotes));
     }
   }
 }
