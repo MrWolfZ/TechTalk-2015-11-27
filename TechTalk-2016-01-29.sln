@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10FA8A72-DB7E-4604-9242-D0F628DF47D5}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConditionalVotingRx", "ConditionalVotingRx\ConditionalVotingRx.csproj", "{A156D8EF-8E1A-4B80-A0F5-5FF66DEF438B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntroRx", "IntroRx\IntroRx.csproj", "{519C3D2E-D9C7-4E92-BCFC-EA5BEB562BD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A156D8EF-8E1A-4B80-A0F5-5FF66DEF438B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A156D8EF-8E1A-4B80-A0F5-5FF66DEF438B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A156D8EF-8E1A-4B80-A0F5-5FF66DEF438B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A156D8EF-8E1A-4B80-A0F5-5FF66DEF438B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519C3D2E-D9C7-4E92-BCFC-EA5BEB562BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519C3D2E-D9C7-4E92-BCFC-EA5BEB562BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519C3D2E-D9C7-4E92-BCFC-EA5BEB562BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519C3D2E-D9C7-4E92-BCFC-EA5BEB562BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
